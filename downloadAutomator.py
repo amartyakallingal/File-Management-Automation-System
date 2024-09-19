@@ -9,6 +9,7 @@ from watchdog.events import FileSystemHandler
 source_dir = "Users/amartyakallingal/Downloads"
 dest_dir_docs = "Users/amartyakallingal/Desktop/Downloaded Documents"
 dest_dir_images = "Users/amartyakallingal/Desktop/Downloaded Images"
+dest_dir_sound = "Users/amartyakallingal/Desktop/Downloaded Sound"
 dest_dir_video = "Users/amartyakallingal/Desktop/Downloaded Video"
 
 document_extensions = [".doc", ".docx", ".pdf", ".xls", ".xlsx", ".ppt", ".pptx"]
@@ -16,6 +17,8 @@ document_extensions = [".doc", ".docx", ".pdf", ".xls", ".xlsx", ".ppt", ".pptx"
 image_extensions = [".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".gif", ".webp", ".tiff", ".tif", ".psd", ".raw", ".arw", ".cr2", ".nrw", ".k25",
                     ".bmp", ".dib", ".heif", ".heic", ".ind", ".indd", ".indt", ".jp2", ".j2k", ".jpf", ".jpf", ".jpx", ".jpm", ".mj2", ".svg", ".svgz", ".ai",
                     ".eps", ".ico"]
+
+sound_extensions = [".m4a", ".flac", "mp3", ".wav", ".wma", ".aac"]
 
 video_extensions = [".webm", ".mpg", ".mp2", ".mpeg", ".mpe", ".mpv", ".ogg", ".mp4", ".mp4v", ".m4v", ".avi", ".wmv", ".mov", ".qt", ".flv", ".swf", ".avchd"]
 
@@ -26,7 +29,6 @@ def make_unique(dest, name):
         name = f"{filename}({str(counter)}){extension}"
         counter += 1
     return name
-
 
 def move_file(dest, entry, name):
     if exists(f"{dest}/{name}"):
@@ -43,6 +45,7 @@ class MoverHandler(FileSystemEventHandler):
                 name = entry.name
                 self.check_document_files(entry, name)
                 self.check_image_files(entry, name)
+                self.check_sound_files(entry, name)
                 self.check_video_files(entry, name)
 
     def check_document_files(self, entry, name):
@@ -56,7 +59,13 @@ class MoverHandler(FileSystemEventHandler):
             if name.endswith(image_extension) or name.endswith(image_extension.upper()):
                 move_file(dest_dir_images, entry, name)
                 logging.info(f"Moved image file: {name}")
-    
+
+    def check_sound_files(self, entry, name):
+        for sound_extension in sound_extensions:
+            if name.endswith(sound_extension) or name.endswith(sound_extension.upper()):
+                move_file(dest_dir_sound, entry, name)
+                logging.info(f"Moved sound file: {name}")
+
     def check_video_files(self, entry, name):
         for video_extension in video_extensions:
             if name.endswith(video_extension) or name.endswith(video_extension.upper()):
